@@ -1,0 +1,39 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Code Review (via OpenRouter)
+        uses: anthropics/claude-code-action@v1
+        env:
+          ANTHROPIC_BASE_URL: https://openrouter.ai/api
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.OPENROUTER_API_KEY }}
+          ANTHROPIC_API_KEY: ""
+        with:
+          claude_code_oauth_token: ${{ secrets.OPENROUTER_API_KEY }}
+          claude_args: "--model anthropic/claude-sonnet-4.5 --max-turns 15"
+          use_sticky_comment: true
+          prompt: |
+            Please review this pull request. Focus on:
+            - Correctness and obvious bugs
+            - Security issues
+            - Readability and maintainability
+            - Test coverage gaps
+
+            Leave inline review comments where appropriate and a short summary at the end.
+            Do not push commits; review only.
