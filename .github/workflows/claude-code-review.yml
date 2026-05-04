@@ -19,16 +19,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Claude Code Review (via OpenRouter)
+      - name: Claude Code Review
         uses: anthropics/claude-code-action@v1
-        env:
-          ANTHROPIC_BASE_URL: https://openrouter.ai/api
-          ANTHROPIC_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          ANTHROPIC_AUTH_TOKEN: ${{ secrets.OPENROUTER_API_KEY }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          anthropic_api_key: ${{ secrets.OPENROUTER_API_KEY }}
-          claude_args: "--model anthropic/claude-sonnet-4.5 --max-turns 15"
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: "--model claude-sonnet-4-5 --max-turns 15"
           use_sticky_comment: true
           prompt: |
             Please review this pull request. Focus on:
